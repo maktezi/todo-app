@@ -73,21 +73,22 @@ If you prefer using Docker:
     ```
    This ensures all scheduled tasks run automatically based on their defined schedule.
 
-### Testing API performance
-
-```bash
-bun octane
-```
-
-```bash
-bun api:test
-```
-
 ## Generating GraphQL Types
 To generate the GraphQL types, run the following command:
 
 ```bash
-bun codegen
+  bun codegen
+```
+
+## Unit Testing
+```bash
+  php artisan test --env=testing
+```
+
+### Testing API performance
+
+```bash
+  bun api:test
 ```
 
 ## API Documentation

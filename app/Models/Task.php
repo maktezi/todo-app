@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use App\Traits\HasGraphQLScopes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Task extends Model
 {
-    use HasGraphQLScopes;
+    use HasGraphQLScopes, HasFactory;
 
     protected array $searchable = [
         'id',
