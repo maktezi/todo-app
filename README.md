@@ -64,7 +64,7 @@ If you prefer using Docker:
 
 4. Run database migrations and seeders:
     ```bash
-    docker compose exec backend php artisan migrate:fresh --seed
+    docker compose exec backend php artisan migrate --seed
     ```
 
 5. Access the frontend at `http://localhost:3000` and the backend at `http://localhost:8000`.
@@ -91,7 +91,7 @@ If you prefer using Docker:
 
 4. Set up the database configuration in the `.env` file and run migration and seeders:
     ```bash
-    php artisan migrate:fresh --seed
+    php artisan migrate --seed
     ```
 
 5. Install the frontend dependencies:
