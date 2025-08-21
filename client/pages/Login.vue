@@ -19,7 +19,7 @@
                         class="text-2xl font-bold text-slate-800 dark:text-slate-200"
                     >
                         Welcome to
-                        <span class="text-primary">{{ appTitle }}</span>
+                        <span class="text-primary">{{ appTitle }}{{ appType }}</span>
                     </h1>
                     <p class="text-slate-800 dark:text-slate-200 mt-2">
                         Sign in to your account
@@ -55,14 +55,8 @@
                         v-model="formState.rememberMe"
                         label="Remember me"
                         name="remember"
+                        class="pt-2 pb-4"
                     />
-                    <UButton
-                        to="/forgot-password"
-                        variant="link"
-                        color="primary"
-                    >
-                        Forgot password?
-                    </UButton>
                 </div>
 
                 <UButton
@@ -85,29 +79,6 @@
                             Create an account
                         </UButton>
                     </p>
-
-                    <UDivider label="Or continue with" class="my-4" />
-
-                    <div class="flex justify-center space-x-4 mt-4">
-                        <UButton
-                            color="gray"
-                            variant="ghost"
-                            icon="i-mdi-google"
-                            aria-label="Continue with Google"
-                        />
-                        <UButton
-                            color="gray"
-                            variant="ghost"
-                            icon="i-mdi-facebook"
-                            aria-label="Continue with Facebook"
-                        />
-                        <UButton
-                            color="gray"
-                            variant="ghost"
-                            icon="i-mdi-apple"
-                            aria-label="Continue with Apple"
-                        />
-                    </div>
                 </div>
             </template>
         </UCard>
@@ -170,7 +141,7 @@ const onSubmit = async () => {
     }
 };
 
-const { appDescription, appTitle, metaDescription } = useConstants();
+const { appDescription, appTitle, appType, metaDescription } = useConstants();
 useHead({
     meta: [
         {

@@ -1,6 +1,17 @@
 <template>
     <div class="p-4">
-        <div class="flex gap-6 overflow-x-auto pb-4">
+        <div class="flex relative gap-6 overflow-x-auto pb-4">
+            <UButton
+                icon="i-heroicons-plus"
+                size="sm"
+                class="absolute right-0 top-0"
+                color="emerald"
+                variant="outline"
+                @click="addTask('PENDING')"
+            >
+                Add New Task
+            </UButton>
+
             <div
                 v-for="column in columns"
                 :key="column.id"
@@ -22,14 +33,6 @@
                                 {{ column.tasks.length }}
                             </UBadge>
                         </div>
-                        <UButton
-                            icon="i-heroicons-plus"
-                            size="sm"
-                            class="border-1"
-                            color="emerald"
-                            variant="outline"
-                            @click="addTask(column.id)"
-                        />
                     </div>
 
                     <!-- Draggable Task List -->
@@ -123,6 +126,7 @@
                             v-model="newTask.priority"
                             :options="priorityOptions"
                             placeholder="Select priority"
+                            class="bg-card"
                         />
                     </UFormGroup>
 
@@ -319,18 +323,18 @@ const onTaskDrop = async (targetColumnId: string) => {
 
     const newIndex = targetColumn.tasks.findIndex(t => t.id === task.id)
 
-    const isDifferentColumn = task.status !== targetColumnId
+    const isDifferentColumn = task.status !== sourceColumn.id
 
     try {
         // Update task with new status and order
-        await saveTask({
-            input: {
-                id: task.id,
-                order: newIndex,
-                status: targetColumnId as TaskStatus,
-                updatedBy: { connect: auth.user?.id }
-            }
-        })
+        const input = {
+            id: task.id,
+            order: newIndex,
+            status: sourceColumn.id,
+            updatedBy: { connect: auth.user?.id }
+        }
+
+        await saveTask({input})
 
         // Reorder other tasks in target column
         const tasksToUpdate = targetColumn.tasks
