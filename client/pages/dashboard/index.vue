@@ -97,7 +97,11 @@
                                     Tasks finished
                                 </p>
                                 <div v-if="!completedLoading && totalTasks > 0">
-                                    <UBadge variant="solid" color="green">
+                                    <UBadge
+                                        variant="solid"
+                                        class="font-bold"
+                                        color="green"
+                                    >
                                         {{
                                             Math.round(
                                                 (completedTasks / totalTasks) *
@@ -150,7 +154,13 @@
                                     Awaiting action
                                 </p>
                                 <div v-if="!pendingLoading && pendingTasks > 0">
-                                    <UBadge variant="solid" color="red">
+                                    <UBadge
+                                        variant="solid"
+                                        class="font-bold"
+                                        :color="
+                                            pendingTasks > 5 ? 'red' : 'yellow'
+                                        "
+                                    >
                                         {{
                                             pendingTasks > 5 ? "High" : "Normal"
                                         }}
