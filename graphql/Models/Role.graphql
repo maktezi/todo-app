@@ -1,0 +1,48 @@
+type Role {
+    id: ID!
+    name: String!
+    guard_name: String!
+    users: [User] @hasMany
+    permissions: [Permission] @belongsToMany
+    created_at: DateTime!
+    updated_at: DateTime!
+    deleted_at: DateTime
+}
+
+input RoleInput {
+    id: ID
+    name: String!
+    guard_name: String
+    permissions: ConnectPermissionsRelation
+}
+
+input ConnectRoleRelation {
+    id: ID
+    connect: ID
+    upsert: RoleInput
+    delete: ID
+}
+
+input ConnectRolesRelation {
+    id: [ID]
+    connect: [ID]
+    sync: [ID]
+    upsert: [RoleInput]
+    update: [ID]
+    delete: [ID]
+}
+
+extend type Query {
+    roles: [Role]! @all
+    rolesPaginate(
+        first: Int!
+        page: Int
+        search: String @scope(name: "search")
+        sort: SortInput @scope(name: "sort")
+    ): [Role]! @paginate
+}
+
+extend type Mutation @guard {
+    upsertRole(input: RoleInput! @spread): Role! @upsert
+    deleteRole(id: [ID!] @eq): [Role] @delete
+}

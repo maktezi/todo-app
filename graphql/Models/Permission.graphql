@@ -1,0 +1,46 @@
+type Permission {
+    id: ID!
+    name: String!
+    guard_name: String!
+    roles: [Role] @belongsToMany
+    created_at: DateTime!
+    updated_at: DateTime!
+    deleted_at: DateTime
+}
+
+input PermissionInput {
+    id: ID
+    name: String!
+    guard_name: String
+}
+
+input ConnectPermissionRelation {
+    id: ID
+    connect: ID
+    upsert: PermissionInput
+    delete: ID
+}
+
+input ConnectPermissionsRelation {
+    id: [ID]
+    connect: [ID]
+    sync: [ID]
+    upsert: [PermissionInput]
+    update: [ID]
+    delete: [ID]
+}
+
+extend type Query {
+    permissions: [Permission]! @all
+    permissionsPaginate(
+        first: Int!
+        page: Int
+        search: String @scope(name: "search")
+        sort: SortInput @scope(name: "sort")
+    ): [Permission]! @paginate
+}
+
+extend type Mutation @guard {
+    upsertPermission(input: PermissionInput! @spread): Permission! @upsert
+    deletePermission(id: [ID!] @eq): [Permission] @delete
+}

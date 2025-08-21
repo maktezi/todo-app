@@ -1,0 +1,71 @@
+type Document {
+    id: ID!
+    createdBy: User! @belongsTo(relation: "createdBy")
+    updatedBy: User @belongsTo(relation: "updatedBy")
+    doc_no: String!
+    type: String!
+    category: String!
+    requested_at: DateTime
+    issued_at: DateTime
+    valid_until: DateTime
+    status: String!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+input DocumentInput {
+    id: ID
+    createdBy: ConnectUserRelation
+    updatedBy: ConnectUserRelation
+    doc_no: String
+    type: String
+    category: String
+    requested_at: DateTime
+    issued_at: DateTime
+    valid_until: DateTime
+    status: String
+}
+
+enum DocumentStatus {
+    PENDING @enum(value: "pending")
+    APPROVED @enum(value: "approved")
+    RELEASED @enum(value: "released")
+    EXPIRED @enum(value: "expired")
+    REVOKED @enum(value: "revoked")
+}
+
+input ConnectDocumentRelation {
+    id: ID
+    connect: ID
+    upsert: DocumentInput
+    delete: ID
+}
+
+input ConnectDocumentsRelation {
+    id: [ID]
+    connect: [ID]
+    sync: [ID]
+    upsert: [DocumentInput]
+    update: [ID]
+    delete: [ID]
+}
+
+extend type Query {
+    documents: [Document]! @all
+    documentsPaginate(
+        first: Int!
+        page: Int
+        search: String @scope(name: "search")
+        sort: SortInput @scope(name: "sort")
+        filter: [FilterInput] @scope(name: "filter")
+        where: _ @whereConditions(columns: ["created_by"])
+    ): [Document]! @paginate
+    documentsCount: Int! @count(model: "Document")
+    totalPendingDocuments: Int! @field(resolver: "App\\GraphQL\\Resolvers\\DocumentResolver@totalPendingDocuments")
+    totalPendingNewToday: Int! @field(resolver: "App\\GraphQL\\Resolvers\\DocumentResolver@totalPendingNewToday")
+}
+
+extend type Mutation @guard {
+    upsertDocument(input: DocumentInput!): Document @field(resolver: "App\\GraphQL\\Resolvers\\DocumentResolver@upsertDocument")
+    deleteDocument(id: [ID!] @eq): [Document] @delete
+}

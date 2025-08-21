@@ -1,0 +1,72 @@
+type User {
+    id: ID!
+    name: String
+    first_name: String!
+    middle_name: String
+    last_name: String!
+    phone: String
+    email: String!
+    password: String!
+    is_active: Boolean
+    is_admin: Boolean! @method(name: "is_admin")
+    usersCount: Int
+    roles: [Role]! @morphToMany
+    documents: [Document] @hasMany
+    permissions: [Permission] @field(resolver: "App\\GraphQL\\Resolvers\\UserResolver@permissions")
+    created_at: DateTime!
+    updated_at: DateTime!
+    deleted_at: DateTime
+}
+
+input UserInput {
+    id: ID
+    first_name: String
+    middle_name: String
+    last_name: String
+    phone: String
+    email: String
+    password: String
+    is_active: Boolean
+    roles: ConnectRolesRelation
+}
+
+input ConnectUserRelation {
+    id: ID
+    connect: ID
+    sync: ID
+    upsert: UserInput
+    delete: ID
+}
+
+input RegisterInput {
+    first_name: String
+    middle_name: String
+    last_name: String
+    phone: String
+    email: String
+    password: String
+    roles: ConnectRolesRelation
+    is_active: Boolean
+}
+
+extend type Query {
+    users: [User]! @all
+    usersPaginate(
+        first: Int!
+        page: Int
+        search: String @scope(name: "search")
+        sort: SortInput @scope(name: "sort")
+        filter: [FilterInput] @scope(name: "filter")
+    ): [User]! @paginate
+    usersCount: Int! @count(model: "User")
+}
+
+extend type Mutation {
+    registerUser(input: RegisterInput!): User @field(resolver: "App\\GraphQL\\Mutations\\UserMutator@registerUser")
+    upsertUser(input: UserInput! @spread): User! @upsert @guard
+    deleteUser(id: [ID!] @eq): [User] @forceDelete @guard
+    restoreUser(id: ID!): User! @restore @guard
+    updateUserStatus(id: ID!, is_active: Boolean!): User @field(resolver: "App\\GraphQL\\Mutations\\UserMutator@updateStatus") @guard
+}
+
+

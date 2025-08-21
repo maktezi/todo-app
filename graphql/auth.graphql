@@ -1,0 +1,44 @@
+type AuthPayload {
+    token: String!
+    user: User!
+}
+
+type LogoutResponse {
+    message: String!
+}
+
+type Query {
+    me: User! @auth(guards: ["sanctum"])
+}
+
+type OtpResponse {
+    status: Boolean
+    remarks: String
+    error: String
+    expiry: Int
+    session_key: String
+    user: User
+}
+
+extend type Mutation {
+#    Authentication
+    login(
+        email: String!
+        password: String!
+    ): AuthPayload!
+    logout: LogoutResponse
+#   OTP
+    requestOtp(
+        user_id: ID
+        email: String
+        generated_session_key: String
+    ): OtpResponse
+    @field(resolver: "App\\GraphQL\\Mutations\\OtpMutator@requestOtp")
+
+    verifyOtp(
+        user_id: ID
+        generated_session_key: String!
+        otp: String!
+    ): OtpResponse
+    @field(resolver: "App\\GraphQL\\Mutations\\OtpMutator@verifyOtp")
+}

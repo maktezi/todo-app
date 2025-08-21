@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+    backend:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: laravel-api
+        container_name: laravel-api
+        ports:
+            - "8000:8000"
+        volumes:
+            - .:/var/www
+        depends_on:
+            - mysql
+            - redis
+        networks:
+            - app
+
+    frontend:
+        build:
+            context: .
+            dockerfile: client/Dockerfile
+        image: nuxt-client
+        container_name: nuxt-client
+        ports:
+            - "3000:3000"
+        networks:
+            - app
+
+    node:
+        image: node:22
+        container_name: node
+        working_dir: /app
+        volumes:
+            - ./client:/app
+        command: sh -c "bun install && bun dev"
+        ports:
+            - "4000:3000"
+        networks:
+            - app
+
+    nginx:
+        image: nginx:stable-alpine
+        container_name: nginx
+        ports:
+            - "80:80"
+        volumes:
+            - .:/var/www
+            - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+        depends_on:
+            - backend
+        networks:
+            - app
+
+    mysql:
+        image: mysql:8
+        container_name: mysql
+        restart: unless-stopped
+        environment:
+            MYSQL_ALLOW_EMPTY_PASSWORD: yes
+            MYSQL_DATABASE: fullstack
+        ports:
+            - "3306:3306"
+        volumes:
+            - mysql_data:/var/lib/mysql
+        networks:
+            - app
+
+    redis:
+        image: redis:alpine
+        container_name: redis
+        ports:
+            - "6379:6379"
+        networks:
+            - app
+
+networks:
+    app:
+        driver: bridge
+
+volumes:
+    mysql_data:
