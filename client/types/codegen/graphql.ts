@@ -329,7 +329,8 @@ export type QueryUsersPaginateArgs = {
 
 /** Allowed column names for Query.tasksPaginate.where. */
 export enum QueryTasksPaginateWhereColumn {
-  CreatedBy = 'CREATED_BY'
+  CreatedBy = 'CREATED_BY',
+  Status = 'STATUS'
 }
 
 /** Dynamic WHERE conditions for the `where` argument of the query `tasksPaginate`. */

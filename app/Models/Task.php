@@ -14,6 +14,7 @@ class Task extends Model
     protected array $searchable = [
         'id',
         'title',
+        'description',
     ];
 
     protected $fillable = [

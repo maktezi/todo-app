@@ -49,12 +49,12 @@ extend type Query {
         search: String @scope(name: "search")
         sort: SortInput @scope(name: "sort")
         filter: [FilterInput] @scope(name: "filter")
-        where: _ @whereConditions(columns: ["created_by"])
+        where: _ @whereConditions(columns: ["status", "created_by"])
     ): [Task]! @paginate
     tasksCount: Int! @count(model: "Task")
 }
 
-extend type Mutation @guard {
+extend type Mutation {
     upsertTask(input: TaskInput!): Task @field(resolver: "App\\GraphQL\\Resolvers\\TaskResolver@upsertTask")
     deleteTask(id: [ID!] @eq): [Task] @delete
 }
