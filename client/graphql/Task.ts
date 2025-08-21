@@ -41,10 +41,8 @@ export const upsertTask = gql`
 `;
 
 export const deleteTask = gql`
-    mutation deleteTask($id: [ID!]) {
-        deleteTask(id: $id) {
-            id
-        }
+    mutation deleteTask($id: [ID!]!) {
+        deleteTask(id: $id)
     }
 `;
 

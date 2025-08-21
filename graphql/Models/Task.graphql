@@ -56,5 +56,5 @@ extend type Query {
 
 extend type Mutation {
     upsertTask(input: TaskInput!): Task @field(resolver: "App\\GraphQL\\Resolvers\\TaskResolver@upsertTask")
-    deleteTask(id: [ID!] @eq): [Task] @delete
+    deleteTask(id: [ID!]!): Boolean @field(resolver: "App\\GraphQL\\Resolvers\\TaskResolver@deleteTask")
 }

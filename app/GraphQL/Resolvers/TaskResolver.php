@@ -57,4 +57,22 @@ class TaskResolver
 
         return $task;
     }
+
+    public function deleteTask($_, array $args): bool
+    {
+        $ids = $args['id'];
+        $tasks = Task::whereIn('id', $ids)->get();
+
+        if ($tasks->isEmpty()) {
+            throw ValidationException::withMessages(['id' => ['No tasks found.']]);
+        }
+
+        foreach ($tasks as $task) {
+            $task->delete();
+        }
+
+        event(new TaskUpdated(['id' => $task->id]));
+
+        return true;
+    }
 }

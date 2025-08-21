@@ -31,7 +31,7 @@ const documents = {
     "\n    mutation deleteRole($id: [ID!]) {\n        deleteRole(id: $id) {\n            id\n        }\n    }\n": types.DeleteRoleDocument,
     "\n    query tasksPaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n        $filter: [FilterInput]\n        $whereConditions: QueryTasksPaginateWhereWhereConditions\n    ) {\n        tasksPaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n            filter: $filter\n            where: $whereConditions\n        ) {\n            data {\n                ...task\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n    \n": types.TasksPaginateDocument,
     "\n    mutation upsertTask($input: TaskInput!) {\n        upsertTask(input: $input) {\n            ...task\n        }\n    }\n    \n": types.UpsertTaskDocument,
-    "\n    mutation deleteTask($id: [ID!]) {\n        deleteTask(id: $id) {\n            id\n        }\n    }\n": types.DeleteTaskDocument,
+    "\n    mutation deleteTask($id: [ID!]!) {\n        deleteTask(id: $id)\n    }\n": types.DeleteTaskDocument,
     "\n    query tasksCount {\n        tasksCount\n    }\n": types.TasksCountDocument,
     "\n    query usersPaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n        $filter: [FilterInput]\n    ) {\n        usersPaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n            filter: $filter\n        ) {\n            data {\n                ...user\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n    \n": types.UsersPaginateDocument,
     "\n    mutation upsertUser($input: UserInput!) {\n        upsertUser(input: $input) {\n            ...user\n        }\n    }\n    \n": types.UpsertUserDocument,
@@ -127,7 +127,7 @@ export function graphql(source: "\n    mutation upsertTask($input: TaskInput!) {
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n    mutation deleteTask($id: [ID!]) {\n        deleteTask(id: $id) {\n            id\n        }\n    }\n"): (typeof documents)["\n    mutation deleteTask($id: [ID!]) {\n        deleteTask(id: $id) {\n            id\n        }\n    }\n"];
+export function graphql(source: "\n    mutation deleteTask($id: [ID!]!) {\n        deleteTask(id: $id)\n    }\n"): (typeof documents)["\n    mutation deleteTask($id: [ID!]!) {\n        deleteTask(id: $id)\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

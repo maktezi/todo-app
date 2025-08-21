@@ -4,9 +4,9 @@
             <div
                 v-for="column in columns"
                 :key="column.id"
-                class="flex-shrink-0 w-80"
+                class="flex-shrink-0 w-96 max-h-[calc(90vh-80px)]"
             >
-                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 h-full overflow-auto">
                     <!-- Column Header -->
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-2">
@@ -25,8 +25,9 @@
                         <UButton
                             icon="i-heroicons-plus"
                             size="sm"
-                            color="gray"
-                            variant="ghost"
+                            class="border-1"
+                            color="emerald"
+                            variant="outline"
                             @click="addTask(column.id)"
                         />
                     </div>
@@ -40,14 +41,18 @@
                         ghost-class="ghost-card"
                         class="space-y-3 min-h-[200px]"
                         :data-column-id="column.id"
-                        @change="onTaskMove($event, column.id)"
+                        @start="onDragStart($event)"
+                        @end="onTaskDrop(column.id)"
                     >
                         <template
                             v-for="task in column.tasks"
                             :key="task.id"
                         >
-                            <UCard class="cursor-move hover:shadow-md transition-shadow">
-                                <div class="space-y-2">
+                            <UCard
+                                class="cursor-move hover:shadow-md transition-shadow"
+                                :data-id="task.id"
+                            >
+                            <div class="space-y-1">
                                     <div class="flex items-start justify-between">
                                         <h4 class="font-medium text-sm text-gray-900 dark:text-white line-clamp-2">
                                             {{ task.title }}
@@ -66,7 +71,7 @@
                                         {{ task.description }}
                                     </p>
 
-                                    <div class="flex items-center justify-between">
+                                    <div class="flex items-center justify-between pt-2">
                                         <div class="flex gap-2">
                                             <UBadge
                                                 v-if="task.priority"
@@ -99,24 +104,27 @@
                     </h3>
                 </template>
 
-                <UForm :state="newTask" class="space-y-4" @submit="submitTask">
-                    <UFormGroup label="Title" required>
+                <UForm
+                    :state="newTask"
+                    :schema="taskSchema"
+                    class="space-y-4"
+                    @submit="submitTask"
+                >
+                    <UFormGroup label="Title" name="title" required>
                         <UInput v-model="newTask.title" placeholder="Enter task title" />
                     </UFormGroup>
 
-                    <UFormGroup label="Description">
+                    <UFormGroup label="Description" name="description">
                         <UTextarea v-model="newTask.description" placeholder="Enter task description" />
                     </UFormGroup>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <UFormGroup label="Priority">
-                            <USelect
-                                v-model="newTask.priority"
-                                :options="priorityOptions"
-                                placeholder="Select priority"
-                            />
-                        </UFormGroup>
-                    </div>
+                    <UFormGroup label="Priority" name="priority">
+                        <USelect
+                            v-model="newTask.priority"
+                            :options="priorityOptions"
+                            placeholder="Select priority"
+                        />
+                    </UFormGroup>
 
                     <div class="flex justify-end gap-2">
                         <UButton color="gray" variant="ghost" @click="isModalOpen = false">
@@ -133,10 +141,9 @@
 </template>
 
 <script setup lang="ts">
-import type {BadgeColor} from "#ui/types";
-
 import { useToast } from "#ui/composables/useToast";
 import {VueDraggable} from 'vue-draggable-plus'
+import { z } from 'zod'
 
 import type {Maybe, Task, TaskPriority, TaskStatus} from "~/types/codegen/graphql";
 
@@ -144,13 +151,11 @@ import {deleteTask, tasksPaginate, upsertTask} from "~/graphql/Task";
 import {getPriorityColor} from "~/pages/tasks/utils/helper";
 import {getFriendlyDate} from "~/utils/helpers"
 
-interface Column {
-    color: BadgeColor
-    icon: string
-    id: string
-    tasks: Task[]
-    title: string
-}
+const taskSchema = z.object({
+    description: z.string().min(1, 'Description is required'),
+    priority: z.string().min(1, 'Priority is required'),
+    title: z.string().min(1, 'Title is required'),
+})
 
 const toast = useToast()
 const auth = useAuthStore()
@@ -166,6 +171,8 @@ const newTask = ref<Partial<Task>>({
     status: 'PENDING' as TaskStatus.Pending,
     title: ''
 })
+
+const draggedTask = ref<Task | null>(null)
 
 const priorityOptions = [
     { label: 'Low', value: 'LOW' },
@@ -213,42 +220,14 @@ onMounted(() => {
     console.log("TASKS:", tasksResult.value?.tasksPaginate)
 })
 
-const columns = ref<Column[]>([
-    {
-        color: 'blue',
-        icon: 'i-heroicons-queue-list',
-        id: 'PENDING',
-        tasks: [],
-        title: 'Pending'
-    },
-    {
-        color: 'green',
-        icon: 'i-heroicons-check-circle',
-        id: 'COMPLETED',
-        tasks: [],
-        title: 'Completed'
-    }
-])
+const taskBoard = useTaskBoardStore()
+const columns = computed(() => taskBoard.columns)
 
-// Watch for tasks data and populate columns
 watchEffect(() => {
-    if (tasksResult.value?.tasksPaginate?.data) {
-        const allTasks = tasksResult.value.tasksPaginate.data
-
-        // Reset columns tasks
-        columns.value.forEach(column => {
-            column.tasks = []
-        })
-
-        // Populate columns with tasks
-        allTasks.forEach(task => {
-            const column = columns.value.find(col => col.id === task.status)
-            if (column) {
-                column.tasks.push(task)
-            }
-        })
-
-        console.log('Columns populated:', columns.value)
+    const tasks = tasksResult.value?.tasksPaginate?.data
+    if (tasks) {
+        const sorted = [...tasks].sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+        taskBoard.setTasks(sorted)
     }
 })
 
@@ -257,7 +236,7 @@ const addTask = (columnId: string) => {
     newTask.value = {
         description: '',
         id: '',
-        priority: 'MEDIUM' as TaskPriority.Medium,
+        priority: undefined,
         status: columnId as Maybe<TaskStatus> | undefined,
         title: ''
     }
@@ -273,6 +252,7 @@ const submitTask = async () => {
         // If task is new, use selectedColumnId as status
         const isNew = !newTask.value.id
         const status = isNew ? selectedColumnId.value : newTask.value.status
+        const tasksInColumn = columns.value.find(col => col.id === status)?.tasks ?? []
 
         const input = {
             description: newTask.value.description,
@@ -280,6 +260,7 @@ const submitTask = async () => {
             status: status as TaskStatus,
             title: newTask.value.title,
             updatedBy: { connect: auth.user?.id },
+            ...(isNew && { order: tasksInColumn.length }),
             ...(isNew && { createdBy: { connect: auth.user?.id } }),
             ...(newTask.value.id && { id: newTask.value.id })
         }
@@ -307,46 +288,83 @@ const submitTask = async () => {
     }
 }
 
-const onTaskMove = async (event: any, columnId: string) => {
-    console.log('Task move event:', event, 'Column:', columnId)
+const onDragStart = (event: any) => {
+    const id = event?.item?.dataset?.id
+    if (!id) return
 
-    if (event.added) {
-        const task = event.added.element
-        const newStatus = columnId as TaskStatus
+    // Find task in all columns
+    for (const col of columns.value) {
+        const found = col.tasks.find(t => t.id === id)
+        if (found) {
+            draggedTask.value = found
+            break
+        }
+    }
 
-        // Manually update the task's status before saving
-        task.status = newStatus
+    console.log('Dragging task:', draggedTask.value)
+}
 
-        console.log('Moving task:', task.id, 'to status:', newStatus)
+const onTaskDrop = async (targetColumnId: string) => {
+    if (!draggedTask.value) return
 
-        try {
+    const task = draggedTask.value
+    draggedTask.value = null // reset
+
+    const sourceColumn = columns.value.find(col =>
+        col.tasks.find(t => t.id === task.id)
+    )
+    const targetColumn = columns.value.find(col => col.id === targetColumnId)
+
+    if (!targetColumn || !sourceColumn) return
+
+    const newIndex = targetColumn.tasks.findIndex(t => t.id === task.id)
+
+    const isDifferentColumn = task.status !== targetColumnId
+
+    try {
+        // Update task with new status and order
+        await saveTask({
+            input: {
+                id: task.id,
+                order: newIndex,
+                status: targetColumnId as TaskStatus,
+                updatedBy: { connect: auth.user?.id }
+            }
+        })
+
+        // Reorder other tasks in target column
+        const tasksToUpdate = targetColumn.tasks
+            .filter(t => t.id !== task.id)
+            .map((t, index) => ({
+                ...t,
+                order: index >= newIndex ? index + 1 : index
+            }))
+
+        for (const t of tasksToUpdate) {
             await saveTask({
                 input: {
-                    description: task.description,
-                    id: task.id,
-                    priority: task.priority,
-                    status: newStatus,
-                    title: task.title
+                    id: t.id,
+                    order: t.order,
+                    updatedBy: { connect: auth.user?.id }
                 }
             })
-
-            await refetchTasks()
-
-            toast.add({
-                color: 'green',
-                icon: 'i-heroicons-check-circle',
-                title: 'Task moved successfully'
-            })
-        } catch (error: any) {
-            await refetchTasks()
-            toast.add({
-                color: 'red',
-                description: error.message,
-                icon: 'i-heroicons-exclamation-circle',
-                title: 'Error moving task'
-            })
-            console.error('Error moving task:', error)
         }
+
+        toast.add({
+            color: 'green',
+            icon: 'i-heroicons-check-circle',
+            title: isDifferentColumn ? 'Task moved' : 'Task reordered'
+        })
+
+        await refetchTasks()
+    } catch (error: any) {
+        toast.add({
+            color: 'red',
+            description: error.message,
+            icon: 'i-heroicons-exclamation-circle',
+            title: 'Error updating task'
+        })
+        await refetchTasks()
     }
 }
 
@@ -372,6 +390,16 @@ const editTask = (task: Task) => {
 const { mutate: removeTask } = useMutation(deleteTask)
 
 const deleteTaskHandler = async (taskId: string) => {
+    if (!auth.can('delete task')) {
+        toast.add({
+            color: 'red',
+            icon: 'i-heroicons-exclamation-circle',
+            title: 'Error: No permission to delete Task'
+        })
+
+        return
+    }
+
     try {
         await removeTask({ id: [taskId] })
         await refetchTasks()
@@ -401,22 +429,12 @@ const resetForm = () => {
     isModalOpen.value = false
 }
 
-function updateTaskInUI(task: Task) {
-    columns.value.forEach(column => {
-        column.tasks = column.tasks.filter(t => t.id !== task.id)
-    })
-
-    const newColumn = columns.value.find(col => col.id === task.status)
-    if (newColumn) {
-        newColumn.tasks.unshift(task)
-    }
-}
-
 const { $echo } = useNuxtApp()
 onMounted(() => {
     $echo.channel('tasks').listen('.TaskUpdated', (event) => {
-        console.log('Got update:', event.task)
-        updateTaskInUI(event.task)
+        // console.log('Got update:', event.task)
+        taskBoard.updateTask(event.task)
+        refetchTasks()
     })
 })
 </script>
