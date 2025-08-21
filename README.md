@@ -83,16 +83,106 @@ bun octane
 bun api:test
 ```
 
-## GraphQL API
-
-GraphQL queries and mutations are handled by **Laravel Lighthouse**. You can explore and test the GraphQL API through the GraphQL Playground available at:
-```bash
-http://localhost:8000/graphiql
-```
-
 ## Generating GraphQL Types
 To generate the GraphQL types, run the following command:
 
 ```bash
 bun codegen
+```
+
+## API Documentation
+
+This project uses [GraphQL](https://graphql.org/) via Laravel Lighthouse.
+
+## Interactive Playground
+Test all GraphQL queries here: - [http://localhost:8000/graphiql](http://localhost:8000/graphiql)
+
+### Postman Collection
+GraphQL API requests (auth) sample in Postman below.
+
+[Download Postman Collection](./docs/TaskManagerGraphQL.postman_collection.json)
+
+### Examples
+
+### Login Step-by-Step in Postman
+#### 1. Method & URL
+
+- **Method**: `POST`
+- **URL**: `http://localhost:8000/graphql`
+
+#### 2. Headers
+
+| Key            | Value              |
+|----------------|--------------------|
+| Content-Type   | application/json   |
+
+
+#### 3. Body
+
+- Go to the **Body** tab
+- Choose **raw**
+- Set format to **JSON**
+- Paste the following:
+
+```json
+{
+  "query": "mutation { login(email: \"admin@mail.com\", password: \"admin1234\") { user { id name } token } }"
+}
+```
+
+If the credentials are correct, you will receive a JSON response like this:
+```json
+{
+  "data": {
+    "login": {
+      "user": {
+        "id": "1",
+        "name": "Super Admin"
+      },
+      "token": "1|sampletoken1232324234"
+    }
+  }
+}
+
+```
+
+### Tasks queries and mutation Step-by-Step in Postman
+```json
+{
+  "query": "query tasksPaginate($first: Int!, $page: Int) { tasksPaginate(first: $first, page: $page) { data { id title status priority } paginatorInfo { currentPage lastPage perPage total } } }",
+  "variables": {
+    "first": 10,
+    "page": 1
+  }
+}
+
+```
+Task result
+```json
+{
+    "data": {
+        "tasksPaginate": {
+            "data": [
+                {
+                    "id": "1",
+                    "title": "asd asd as d",
+                    "status": "PENDING",
+                    "priority": "HIGH"
+                },
+                {
+                    "id": "2",
+                    "title": "asd asd as",
+                    "status": "PENDING",
+                    "priority": "LOW"
+                }
+            ],
+            "paginatorInfo": {
+                "currentPage": 1,
+                "lastPage": 1,
+                "perPage": 10,
+                "total": 2
+            }
+        }
+    }
+}
 ```
