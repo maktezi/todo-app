@@ -1,3 +1,46 @@
+## Project Structure: Monorepo for Simplicity & Developer Experience
+
+This project uses a **monorepo structure** instead of the conventional `/frontend` and `/backend` split. This was a conscious decision to improve:
+
+- **Developer productivity** — both apps share the same `.env` file and configurations.
+- **Tighter integration** — GraphQL schema and shared logic are more easily maintained.
+- **Simpler local development** — a unified workspace reduces overhead.
+
+## Bonus Features
+
+### 1. OTP Verification on Registration
+
+To reduce fake or invalid email registrations, an **OTP-based verification system** was implemented during user registration. Once a user registers, an OTP is sent to their email address and must be verified before full access is granted.
+
+- OTP is generated and emailed using Laravel Mailables.
+- OTPs are time-limited for added security.
+
+This improves **security** and ensures only **valid emails** are used during signup.
+
+### 2. Centralized Roles & Permissions
+
+A robust **role-based access control (RBAC)** system is integrated using:
+
+- **Laravel Sanctum** for API authentication.
+- **Spatie Laravel Permission** for defining and managing roles and permissions.
+- Middleware-enforced access to pages, APIs, and features.
+- Centralized role/permission management UI built in the frontend on users page.
+
+### 3. The UI supports both **dark mode** and **light mode**, with a toggle button for users to switch themes dynamically.
+
+- Theme preference is saved and remembered using local storage.
+- TailwindCSS’s dark mode support is fully utilized.
+- Fully responsive UI for both themes across desktop, tablet, and mobile.
+---
+## Summary of Improvements
+
+| Feature                               | Description |
+|---------------------------------------|-------------|
+| ✅ Monorepo Structure                  | Unified full-stack app with shared `.env` and schema |
+| ✅ OTP Registration Flow               | Reduces invalid/fake emails, adds email verification |
+| ✅ Centralized Role & Permission System | RBAC using Sanctum and Spatie, with middleware + UI |
+| ✅ GraphQL API with Lighthouse         | Efficient, strongly typed schema |
+
 ### Docker Setup *(Optional)*
 If you prefer using Docker:
 
@@ -67,10 +110,6 @@ If you prefer using Docker:
     ```bash
     php artisan schedule:run
     ```
-   For production, add the following to your system's crontab to run the scheduler every minute:
-    ```bash
-    * * * * * cd /path-to-app && php artisan schedule:run >> /dev/null 2>&1
-    ```
    This ensures all scheduled tasks run automatically based on their defined schedule.
 
 ## Generating GraphQL Types
@@ -81,6 +120,9 @@ To generate the GraphQL types, run the following command:
 ```
 
 ## Unit Testing
+```bash
+  php artisan migrate --env=testing
+```
 ```bash
   php artisan test --env=testing
 ```
@@ -100,10 +142,6 @@ Test all GraphQL queries here: - [http://localhost:8000/graphiql](http://localho
 
 ### Postman Collection
 GraphQL API requests (auth) sample in Postman below.
-
-[Download Postman Collection](./docs/TaskManagerGraphQL.postman_collection.json)
-
-### Examples
 
 ### Login Step-by-Step in Postman
 #### 1. Method & URL
@@ -166,13 +204,13 @@ Task result
             "data": [
                 {
                     "id": "1",
-                    "title": "asd asd as d",
+                    "title": "Testing 1",
                     "status": "PENDING",
                     "priority": "HIGH"
                 },
                 {
                     "id": "2",
-                    "title": "asd asd as",
+                    "title": "Testing 2",
                     "status": "PENDING",
                     "priority": "LOW"
                 }

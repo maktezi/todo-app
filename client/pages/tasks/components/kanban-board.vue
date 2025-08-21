@@ -322,7 +322,7 @@ const submitTask = async () => {
             icon: "i-heroicons-check-circle",
             title: `Task ${isNew ? "created" : "updated"} successfully`,
         });
-
+        refetchTasks();
         resetForm();
     } catch (error: any) {
         toast.add({
@@ -331,6 +331,7 @@ const submitTask = async () => {
             icon: "i-heroicons-exclamation-circle",
             title: "Error saving task",
         });
+        refetchTasks();
         console.error("Error saving task:", error);
     } finally {
         isSubmitting.value = false;
@@ -350,7 +351,7 @@ const onDragStart = (event: any) => {
         }
     }
 
-    console.log("Dragging task:", draggedTask.value);
+    // console.log("Dragging task:", draggedTask.value);
 };
 
 const onTaskDrop = async (targetColumnId: string) => {
@@ -371,7 +372,6 @@ const onTaskDrop = async (targetColumnId: string) => {
     const isDifferentColumn = task.status !== sourceColumn.id;
 
     try {
-        // Update task with new status and order
         const input = {
             id: task.id,
             order: newIndex,
@@ -457,6 +457,8 @@ const deleteTaskHandler = async (taskId: string) => {
             icon: "i-heroicons-check-circle",
             title: "Task deleted successfully",
         });
+
+        refetchTasks();
     } catch (error: any) {
         toast.add({
             color: "red",
@@ -465,6 +467,7 @@ const deleteTaskHandler = async (taskId: string) => {
             title: "Error deleting task",
         });
         console.error("Error deleting task:", error);
+        refetchTasks();
     }
 };
 
@@ -480,9 +483,9 @@ const resetForm = () => {
 
 const { $echo } = useNuxtApp();
 onMounted(() => {
-    $echo.channel("tasks").listen(".TaskUpdated", (event) => {
-        console.log("Got update:", event.task);
-        taskBoard.updateTask(event.task);
+    $echo.channel("tasks").listen(".TaskUpdated", (e) => {
+        console.log("Got update:", e.task);
+        taskBoard.updateTask(e.task);
         refetchTasks();
     });
 });

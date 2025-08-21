@@ -45,6 +45,7 @@ logs
 # Local env files
 .env.*
 !.env.example
+!.env.testing
 
 **/caddy
 frankenphp

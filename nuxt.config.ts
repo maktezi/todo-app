@@ -40,6 +40,7 @@ export default defineNuxtConfig({
             REVERB_APP_KEY: import.meta.env.REVERB_APP_KEY,
             REVERB_HOST: import.meta.env.REVERB_HOST,
             REVERB_PORT: import.meta.env.REVERB_PORT,
+            REVERB_SCHEME: import.meta.env.REVERB_SCHEME,
         },
     },
     srcDir: "client/",

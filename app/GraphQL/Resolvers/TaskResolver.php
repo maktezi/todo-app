@@ -68,10 +68,9 @@ class TaskResolver
         }
 
         foreach ($tasks as $task) {
+            event(new TaskUpdated(['id' => $task->id]));
             $task->delete();
         }
-
-        event(new TaskUpdated(['id' => $task->id]));
 
         return true;
     }

@@ -93,9 +93,7 @@ class TaskTest extends TestCase
 
         $query = /** @lang GraphQL */ '
             mutation($id: [ID!]!) {
-                deleteTask(id: $id) {
-                    id
-                }
+                deleteTask(id: $id)
             }
         ';
 
@@ -107,7 +105,7 @@ class TaskTest extends TestCase
         ]);
 
         $response->assertStatus(200)
-            ->assertJsonPath('data.deleteTask.0.id', (string) $task->id);
+            ->assertJsonPath('data.deleteTask', true);
 
         $this->assertDatabaseMissing('tasks', ['id' => $task->id]);
     }
