@@ -71,7 +71,7 @@ If you prefer using Docker:
     ```bash
     * * * * * cd /path-to-app && php artisan schedule:run >> /dev/null 2>&1
     ```
-   This ensures all scheduled tasks (e.g., auto-expiring permits) run automatically based on their defined schedule.
+   This ensures all scheduled tasks run automatically based on their defined schedule.
 
 ### Testing API performance
 

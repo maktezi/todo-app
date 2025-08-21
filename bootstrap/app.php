@@ -20,10 +20,10 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withCommands([
-        \App\Console\Commands\UpdateExpiredPermits::class,
+        \App\Console\Commands\DeleteOldTasks::class,
         \App\Console\Commands\GenerateOtpSecretKey::class,
     ])
     ->withSchedule(function (\Illuminate\Console\Scheduling\Schedule $schedule) {
-        $schedule->command('permits:expire-check')->daily();
+        $schedule->command('app:delete-old-tasks')->dailyAt('00:00');
     })
     ->create();
