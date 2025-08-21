@@ -40,7 +40,7 @@ const tableData = useTableData<Task>(
     {
         icon: "solar:documents-broken",
         permission: "task",
-        title: "Tasks",
+        title: "Admin Table",
     },
     {
         delete: deleteTask,
