@@ -94,7 +94,7 @@
         <UModal v-model="isModalOpen">
             <UCard>
                 <template #header>
-                    <h3 class="text-lg font-semibold">
+                    <h3 class="text-lg font-semibold text-primary">
                         {{ newTask.id ? 'Edit Task' : 'Add New Task' }}
                     </h3>
                 </template>
@@ -173,15 +173,39 @@ const priorityOptions = [
     { label: 'High', value: 'HIGH' }
 ]
 
+function conditions() {
+    const isAdmin = auth.user?.roles?.some((r) => r?.name === "Admin");
+    const requiredPermissions = [
+        "view task",
+        "create task",
+        "edit task",
+        "delete task",
+    ];
+    const hasPermissions = requiredPermissions.every((perm) => auth.can(perm));
+
+    if (isAdmin || hasPermissions) return undefined;
+
+    return {
+        column: "CREATED_BY",
+        operator: "EQ",
+        value: auth.user?.id,
+    };
+}
+
+
 const queryVariables = ref({
     first: 10,
     page: 1,
-    whereConditions: {
-        OR: [
-            { AND: [{ column: "CREATED_BY", operator: "EQ", value: auth.user?.id }] }
-        ]
-    }
-})
+    ...(conditions() && {
+        whereConditions: {
+            OR: [
+                {
+                    AND: [conditions()]
+                }
+            ]
+        }
+    })
+});
 
 const { refetch: refetchTasks, result: tasksResult } = useQuery(tasksPaginate, () => queryVariables.value)
 
@@ -376,6 +400,25 @@ const resetForm = () => {
     }
     isModalOpen.value = false
 }
+
+function updateTaskInUI(task: Task) {
+    columns.value.forEach(column => {
+        column.tasks = column.tasks.filter(t => t.id !== task.id)
+    })
+
+    const newColumn = columns.value.find(col => col.id === task.status)
+    if (newColumn) {
+        newColumn.tasks.unshift(task)
+    }
+}
+
+const { $echo } = useNuxtApp()
+onMounted(() => {
+    $echo.channel('tasks').listen('.TaskUpdated', (event) => {
+        console.log('Got update:', event.task)
+        updateTaskInUI(event.task)
+    })
+})
 </script>
 
 <style scoped>

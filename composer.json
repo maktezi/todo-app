@@ -12,6 +12,7 @@
         "php": "^8.2",
         "laravel/framework": "12.*",
         "laravel/octane": "^2.9",
+        "laravel/reverb": "^1.5",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
         "mll-lab/graphql-php-scalars": "^6.4",

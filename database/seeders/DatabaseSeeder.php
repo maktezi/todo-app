@@ -85,6 +85,7 @@ class DatabaseSeeder extends Seeder
         $users = User::factory(50)->create();
         $users->each(fn($user) => $user->assignRole($userRole));
         $userRole->syncPermissions([
+            'view dashboard',
             'view task',
             'create task',
             'edit task',

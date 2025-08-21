@@ -2,7 +2,7 @@
 
 namespace App\GraphQL\Resolvers;
 
-use App\Models\Document;
+use App\Events\TaskUpdated;
 use App\Models\Task;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -45,6 +45,15 @@ class TaskResolver
             $input['status'] = 'pending';
             $task = Task::create($input);
         }
+
+        event(new TaskUpdated([
+            'id' => $task->id,
+            'title' => $task->title,
+            'description' => $task->description,
+            'status' => $task->status,
+            'priority' => $task->priority,
+            'order' => $task->order,
+        ]));
 
         return $task;
     }

@@ -8,11 +8,11 @@
             }"
             :items="items"
         >
-            <template #manage-task>
-                <ManageTask />
-            </template>
             <template #board>
                 <Board />
+            </template>
+            <template #manage-task>
+                <ManageTask />
             </template>
         </UTabs>
     </div>
@@ -24,14 +24,14 @@ import ManageTask from "./components/manage-task.vue";
 
 const items = [
     {
-        icon: "solar:clipboard-list-outline",
-        label: "Table View",
-        slot: "manage-task",
-    },
-    {
         icon: "solar:widget-2-outline",
         label: "Board View",
         slot: "board",
+    },
+    {
+        icon: "solar:clipboard-list-outline",
+        label: "Table View",
+        slot: "manage-task",
     },
 ];
 

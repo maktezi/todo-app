@@ -37,6 +37,9 @@ export default defineNuxtConfig({
         public: {
             API_URL: import.meta.env.APP_URL,
             OTP_SECRET_KEY: import.meta.env.OTP_SECRET_KEY,
+            REVERB_APP_KEY: import.meta.env.REVERB_APP_KEY,
+            REVERB_HOST: import.meta.env.REVERB_HOST,
+            REVERB_PORT: import.meta.env.REVERB_PORT,
         },
     },
     srcDir: "client/",
