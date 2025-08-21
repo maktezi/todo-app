@@ -63,14 +63,10 @@ class DatabaseSeeder extends Seeder
             'edit permission',
             'delete permission',
 
-            'view document',
-            'create document',
-            'edit document',
-            'delete document',
-            'approve document',
-            'pending document',
-            'release document',
-            'revoke document',
+            'view task',
+            'create task',
+            'edit task',
+            'delete task',
         ];
 
         // Create permissions if not exists
@@ -89,11 +85,9 @@ class DatabaseSeeder extends Seeder
         $users = User::factory(50)->create();
         $users->each(fn($user) => $user->assignRole($userRole));
         $userRole->syncPermissions([
-            'view dashboard',
-            'view document',
-            'create document',
-            'edit document',
-            'delete document',
+            'view task',
+            'create task',
+            'edit task',
         ]);
 
         // Assign permissions to roles

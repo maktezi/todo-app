@@ -48,16 +48,14 @@ export const permissionFragment = gql`
     }
 `;
 
-export const documentFragment = gql`
-    fragment document on Document {
+export const taskFragment = gql`
+    fragment task on Task {
         id
-        doc_no
-        type
-        category
+        title
+        description
         status
-        requested_at
-        issued_at
-        valid_until
+        priority
+        order
         createdBy {
             id
             name

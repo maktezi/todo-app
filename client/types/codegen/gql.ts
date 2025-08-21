@@ -19,23 +19,20 @@ const documents = {
     "\n    mutation logout {\n        logout {\n            message\n        }\n    }\n": types.LogoutDocument,
     "\n    mutation requestOtp($userId: ID, $email: String, $sessionKey: String) {\n        requestOtp(\n            user_id: $userId\n            email: $email\n            generated_session_key: $sessionKey\n        ) {\n            status\n            remarks\n            error\n            expiry\n            session_key\n        }\n    }\n": types.RequestOtpDocument,
     "\n    mutation verifyOtp($userId: ID, $sessionKey: String!, $otp: String!) {\n        verifyOtp(\n            user_id: $userId\n            generated_session_key: $sessionKey\n            otp: $otp\n        ) {\n            status\n            remarks\n            error\n            expiry\n            user {\n                id\n                email\n            }\n        }\n    }\n": types.VerifyOtpDocument,
-    "\n    query documentsPaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n        $filter: [FilterInput]\n        $whereConditions: QueryDocumentsPaginateWhereWhereConditions\n    ) {\n        documentsPaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n            filter: $filter\n            where: $whereConditions\n        ) {\n            data {\n                ...document\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n    \n": types.DocumentsPaginateDocument,
-    "\n    query recentDocuments {\n        documentsPaginate(\n            first: 20\n            sort: { column: \"UPDATED_AT\", direction: \"DESC\" }\n        ) {\n            data {\n                id\n                doc_no\n                type\n                status\n                updated_at\n            }\n        }\n    }\n": types.RecentDocumentsDocument,
-    "\n    mutation upsertDocument($input: DocumentInput!) {\n        upsertDocument(input: $input) {\n            ...document\n        }\n    }\n    \n": types.UpsertDocumentDocument,
-    "\n    mutation deleteDocument($id: [ID!]) {\n        deleteDocument(id: $id) {\n            id\n        }\n    }\n": types.DeleteDocumentDocument,
-    "\n    query documentsCount {\n        documentsCount\n    }\n": types.DocumentsCountDocument,
-    "\n    query totalPendingDocuments {\n        totalPendingDocuments\n    }\n": types.TotalPendingDocumentsDocument,
-    "\n    query totalPendingNewToday {\n        totalPendingNewToday\n    }\n": types.TotalPendingNewTodayDocument,
     "\n    fragment user on User {\n        id\n        name\n        first_name\n        middle_name\n        last_name\n        email\n        phone\n        password\n        is_admin\n        roles {\n            id\n            name\n        }\n        is_active\n        created_at\n        updated_at\n        deleted_at\n    }\n": types.UserFragmentDoc,
     "\n    fragment role on Role {\n        id\n        name\n        guard_name\n        users {\n            id\n            name\n        }\n        permissions {\n            id\n            name\n        }\n        created_at\n        updated_at\n    }\n": types.RoleFragmentDoc,
     "\n    fragment permission on Permission {\n        id\n        name\n        guard_name\n        created_at\n        updated_at\n    }\n": types.PermissionFragmentDoc,
-    "\n    fragment document on Document {\n        id\n        doc_no\n        type\n        category\n        status\n        requested_at\n        issued_at\n        valid_until\n        createdBy {\n            id\n            name\n        }\n        updatedBy {\n            id\n            name\n        }\n        created_at\n        updated_at\n    }\n": types.DocumentFragmentDoc,
+    "\n    fragment task on Task {\n        id\n        title\n        description\n        status\n        priority\n        order\n        createdBy {\n            id\n            name\n        }\n        updatedBy {\n            id\n            name\n        }\n        created_at\n        updated_at\n    }\n": types.TaskFragmentDoc,
     "\n    query permissionsPaginate(\n            $first: Int!\n            $page: Int\n            $search: String\n            $sort: SortInput\n        ) {\n            permissionsPaginate(\n                first: $first\n                page: $page\n                search: $search\n                sort: $sort\n            ) {\n                data {\n                    ...permission\n                }\n                paginatorInfo {\n                    currentPage\n                    lastPage\n                    perPage\n                    total\n                    \n                }\n            }\n        }\n        \n": types.PermissionsPaginateDocument,
     "\n    mutation upsertPermission($input: PermissionInput!){\n        upsertPermission(input: $input){\n            ...permission\n        }\n    }\n    \n": types.UpsertPermissionDocument,
     "\n    mutation deletePermission($id: [ID!]) {\n        deletePermission(id: $id) {\n            id\n        }\n    }\n": types.DeletePermissionDocument,
     "\n    query rolesPaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n    ) {\n        rolesPaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n        ) {\n            data {\n                ...role\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n    \n": types.RolesPaginateDocument,
     "\n    mutation upsertRole($input: RoleInput!) {\n        upsertRole(input: $input) {\n            ...role\n        }\n    }\n    \n": types.UpsertRoleDocument,
     "\n    mutation deleteRole($id: [ID!]) {\n        deleteRole(id: $id) {\n            id\n        }\n    }\n": types.DeleteRoleDocument,
+    "\n    query tasksPaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n        $filter: [FilterInput]\n        $whereConditions: QueryTasksPaginateWhereWhereConditions\n    ) {\n        tasksPaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n            filter: $filter\n            where: $whereConditions\n        ) {\n            data {\n                ...task\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n    \n": types.TasksPaginateDocument,
+    "\n    mutation upsertTask($input: TaskInput!) {\n        upsertTask(input: $input) {\n            ...task\n        }\n    }\n    \n": types.UpsertTaskDocument,
+    "\n    mutation deleteTask($id: [ID!]) {\n        deleteTask(id: $id) {\n            id\n        }\n    }\n": types.DeleteTaskDocument,
+    "\n    query tasksCount {\n        tasksCount\n    }\n": types.TasksCountDocument,
     "\n    query usersPaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n        $filter: [FilterInput]\n    ) {\n        usersPaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n            filter: $filter\n        ) {\n            data {\n                ...user\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n    \n": types.UsersPaginateDocument,
     "\n    mutation upsertUser($input: UserInput!) {\n        upsertUser(input: $input) {\n            ...user\n        }\n    }\n    \n": types.UpsertUserDocument,
     "\n    mutation deleteUser($id: [ID!]) {\n        deleteUser(id: $id) {\n            id\n        }\n    }\n": types.DeleteUserDocument,
@@ -82,34 +79,6 @@ export function graphql(source: "\n    mutation verifyOtp($userId: ID, $sessionK
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n    query documentsPaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n        $filter: [FilterInput]\n        $whereConditions: QueryDocumentsPaginateWhereWhereConditions\n    ) {\n        documentsPaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n            filter: $filter\n            where: $whereConditions\n        ) {\n            data {\n                ...document\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n    \n"): (typeof documents)["\n    query documentsPaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n        $filter: [FilterInput]\n        $whereConditions: QueryDocumentsPaginateWhereWhereConditions\n    ) {\n        documentsPaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n            filter: $filter\n            where: $whereConditions\n        ) {\n            data {\n                ...document\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n    \n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n    query recentDocuments {\n        documentsPaginate(\n            first: 20\n            sort: { column: \"UPDATED_AT\", direction: \"DESC\" }\n        ) {\n            data {\n                id\n                doc_no\n                type\n                status\n                updated_at\n            }\n        }\n    }\n"): (typeof documents)["\n    query recentDocuments {\n        documentsPaginate(\n            first: 20\n            sort: { column: \"UPDATED_AT\", direction: \"DESC\" }\n        ) {\n            data {\n                id\n                doc_no\n                type\n                status\n                updated_at\n            }\n        }\n    }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n    mutation upsertDocument($input: DocumentInput!) {\n        upsertDocument(input: $input) {\n            ...document\n        }\n    }\n    \n"): (typeof documents)["\n    mutation upsertDocument($input: DocumentInput!) {\n        upsertDocument(input: $input) {\n            ...document\n        }\n    }\n    \n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n    mutation deleteDocument($id: [ID!]) {\n        deleteDocument(id: $id) {\n            id\n        }\n    }\n"): (typeof documents)["\n    mutation deleteDocument($id: [ID!]) {\n        deleteDocument(id: $id) {\n            id\n        }\n    }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n    query documentsCount {\n        documentsCount\n    }\n"): (typeof documents)["\n    query documentsCount {\n        documentsCount\n    }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n    query totalPendingDocuments {\n        totalPendingDocuments\n    }\n"): (typeof documents)["\n    query totalPendingDocuments {\n        totalPendingDocuments\n    }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
-export function graphql(source: "\n    query totalPendingNewToday {\n        totalPendingNewToday\n    }\n"): (typeof documents)["\n    query totalPendingNewToday {\n        totalPendingNewToday\n    }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
 export function graphql(source: "\n    fragment user on User {\n        id\n        name\n        first_name\n        middle_name\n        last_name\n        email\n        phone\n        password\n        is_admin\n        roles {\n            id\n            name\n        }\n        is_active\n        created_at\n        updated_at\n        deleted_at\n    }\n"): (typeof documents)["\n    fragment user on User {\n        id\n        name\n        first_name\n        middle_name\n        last_name\n        email\n        phone\n        password\n        is_admin\n        roles {\n            id\n            name\n        }\n        is_active\n        created_at\n        updated_at\n        deleted_at\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -122,7 +91,7 @@ export function graphql(source: "\n    fragment permission on Permission {\n    
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n    fragment document on Document {\n        id\n        doc_no\n        type\n        category\n        status\n        requested_at\n        issued_at\n        valid_until\n        createdBy {\n            id\n            name\n        }\n        updatedBy {\n            id\n            name\n        }\n        created_at\n        updated_at\n    }\n"): (typeof documents)["\n    fragment document on Document {\n        id\n        doc_no\n        type\n        category\n        status\n        requested_at\n        issued_at\n        valid_until\n        createdBy {\n            id\n            name\n        }\n        updatedBy {\n            id\n            name\n        }\n        created_at\n        updated_at\n    }\n"];
+export function graphql(source: "\n    fragment task on Task {\n        id\n        title\n        description\n        status\n        priority\n        order\n        createdBy {\n            id\n            name\n        }\n        updatedBy {\n            id\n            name\n        }\n        created_at\n        updated_at\n    }\n"): (typeof documents)["\n    fragment task on Task {\n        id\n        title\n        description\n        status\n        priority\n        order\n        createdBy {\n            id\n            name\n        }\n        updatedBy {\n            id\n            name\n        }\n        created_at\n        updated_at\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -147,6 +116,22 @@ export function graphql(source: "\n    mutation upsertRole($input: RoleInput!) {
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n    mutation deleteRole($id: [ID!]) {\n        deleteRole(id: $id) {\n            id\n        }\n    }\n"): (typeof documents)["\n    mutation deleteRole($id: [ID!]) {\n        deleteRole(id: $id) {\n            id\n        }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    query tasksPaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n        $filter: [FilterInput]\n        $whereConditions: QueryTasksPaginateWhereWhereConditions\n    ) {\n        tasksPaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n            filter: $filter\n            where: $whereConditions\n        ) {\n            data {\n                ...task\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n    \n"): (typeof documents)["\n    query tasksPaginate(\n        $first: Int!\n        $page: Int\n        $search: String\n        $sort: SortInput\n        $filter: [FilterInput]\n        $whereConditions: QueryTasksPaginateWhereWhereConditions\n    ) {\n        tasksPaginate(\n            first: $first\n            page: $page\n            search: $search\n            sort: $sort\n            filter: $filter\n            where: $whereConditions\n        ) {\n            data {\n                ...task\n            }\n            paginatorInfo {\n                currentPage\n                lastPage\n                perPage\n                total\n            }\n        }\n    }\n    \n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation upsertTask($input: TaskInput!) {\n        upsertTask(input: $input) {\n            ...task\n        }\n    }\n    \n"): (typeof documents)["\n    mutation upsertTask($input: TaskInput!) {\n        upsertTask(input: $input) {\n            ...task\n        }\n    }\n    \n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    mutation deleteTask($id: [ID!]) {\n        deleteTask(id: $id) {\n            id\n        }\n    }\n"): (typeof documents)["\n    mutation deleteTask($id: [ID!]) {\n        deleteTask(id: $id) {\n            id\n        }\n    }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n    query tasksCount {\n        tasksCount\n    }\n"): (typeof documents)["\n    query tasksCount {\n        tasksCount\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

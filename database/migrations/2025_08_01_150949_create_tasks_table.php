@@ -11,17 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('documents', function (Blueprint $table) {
+        Schema::create('tasks', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->enum('status', ['pending', 'completed'])->default('pending');
+            $table->enum('priority', ['low', 'medium', 'high'])->default('medium');
+            $table->integer('order')->default(0);
             $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
             $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
-            $table->string('doc_no')->unique();
-            $table->string('type'); // e.g., Business
-            $table->string('category')->default('document'); // e.g. 'permit', 'certificate'
-            $table->dateTime('requested_at')->nullable();
-            $table->dateTime('issued_at')->nullable();
-            $table->dateTime('valid_until')->nullable();
-            $table->enum('status', ['pending', 'approved', 'released', 'expired', 'revoked'])->default('pending');
             $table->timestamps();
         });
     }
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('documents');
+        Schema::dropIfExists('tasks');
     }
 };

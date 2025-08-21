@@ -1,11 +1,11 @@
 <template>
-    <ManageDocument />
+    <ManageTask />
 </template>
 
 <script setup lang="ts">
-import ManageDocument from "./components/manage-document.vue";
+import ManageTask from "./components/manage-task.vue";
 
-definePageMeta({ layout: "app-layout", permission: "view document" });
+definePageMeta({ layout: "app-layout", permission: "view task" });
 
 const route = useRoute();
 const routeName = computed(() => route.name ?? "Page");

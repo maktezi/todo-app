@@ -16,9 +16,9 @@ export const useLinks = () => {
         },
         {
             icon: "solar:documents-broken",
-            label: "Documents",
-            permission: auth.can("view document"),
-            to: "/documents",
+            label: "Tasks",
+            permission: auth.can("view task"),
+            to: "/tasks",
         },
     ];
 

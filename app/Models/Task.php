@@ -6,26 +6,24 @@ use App\Traits\HasGraphQLScopes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Document extends Model
+class Task extends Model
 {
     use HasGraphQLScopes;
 
     protected array $searchable = [
         'id',
-        'doc_no',
+        'title',
     ];
 
     protected $fillable = [
         'id',
         'created_by',
         'updated_by',
-        'doc_no',
-        'type',
-        'category',
-        'requested_at',
-        'issued_at',
-        'valid_until',
-        'status'
+        'title',
+        'description',
+        'status',
+        'priority',
+        'order',
     ];
 
     public function createdBy(): BelongsTo
@@ -37,5 +35,4 @@ class Document extends Model
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
-
 }
