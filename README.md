@@ -1,7 +1,5 @@
 ## Project Structure: Monorepo for Simplicity & Developer Experience
 
-This project uses a **monorepo structure** instead of the conventional `/frontend` and `/backend` split. This was a conscious decision to improve:
-
 - **Developer productivity** — both apps share the same `.env` file and configurations.
 - **Tighter integration** — GraphQL schema and shared logic are more easily maintained.
 - **Simpler local development** — a unified workspace reduces overhead.
@@ -26,52 +24,18 @@ A robust **role-based access control (RBAC)** system is integrated using:
 - Middleware-enforced access to pages, APIs, and features.
 - Centralized role/permission management UI built in the frontend on users page.
 
-### 3. The UI supports both **dark mode** and **light mode**, with a toggle button for users to switch themes dynamically.
+### 3. Search, filter by status, drag-and-drop and responsive ui.
 
-- Theme preference is saved and remembered using local storage.
-- TailwindCSS’s dark mode support is fully utilized.
-- Fully responsive UI for both themes across desktop, tablet, and mobile.
----
-## Summary of Improvements
+- Search bar on the admin side on table view
+- Can filter by status like pending, completed or filter by priority(low, medium, high)
+- Kanban style drag and drop.
 
-| Feature                               | Description |
-|---------------------------------------|-------------|
-| ✅ Monorepo Structure                  | Unified full-stack app with shared `.env` and schema |
-| ✅ OTP Registration Flow               | Reduces invalid/fake emails, adds email verification |
-| ✅ Centralized Role & Permission System | RBAC using Sanctum and Spatie, with middleware + UI |
-| ✅ GraphQL API with Lighthouse         | Efficient, strongly typed schema |
+### 4. Realtime update with websockets
 
-### Docker Setup *(Optional)*
-If you prefer using Docker:
-
-1. Clone the repository:
-    ```bash
-    git clone https://github.com/maktezi/laravel-vue.git
-   
-    cd laravel-vue
-    ```
-2. Copy the `.env.example` file and generate the application key and OTP key:
-    ```bash
-    cp .env.example .env
-    php artisan key:generate
-    php artisan otp:generate-key
-    ```
-
-3. Build and start the Docker containers:
-    ```bash
-    docker compose up -d --build
-    ```
-
-4. Run database migrations and seeders:
-    ```bash
-    docker compose exec backend php artisan migrate --seed
-    ```
-
-5. Access the frontend at `http://localhost:3000` and the backend at `http://localhost:8000`.
-
+- Kanban realtime updates via websockets
 ---
 
-### Manual Setup
+### Setup Instructions
 1. Clone the repository:
     ```bash
     git clone https://github.com/maktezi/laravel-vue.git

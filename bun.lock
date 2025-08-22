@@ -32,7 +32,7 @@
         "@graphql-codegen/introspection": "4.0.3",
         "@iconify-json/mdi": "^1.2.3",
         "@iconify-json/solar": "^1.2.2",
-        "@laravel/echo-vue": "^2.1.7",
+        "@laravel/echo-vue": "^2.2.0",
         "@nuxtjs/apollo": "^5.0.0-alpha.14",
         "@parcel/watcher": "^2.5.0",
         "@vueuse/core": "^12.7.0",
@@ -40,7 +40,7 @@
         "axios": "^1.7.4",
         "concurrently": "^9.1.2",
         "eslint-plugin-perfectionist": "^4.9.0",
-        "laravel-echo": "^2.1.7",
+        "laravel-echo": "^2.2.0",
         "postcss": "^8.5.3",
         "prettier": "3.5.2",
         "pusher-js": "^8.4.0",
@@ -356,7 +356,7 @@
 
     "@kwsites/promise-deferred": ["@kwsites/promise-deferred@1.1.1", "", {}, "sha512-GaHYm+c0O9MjZRu0ongGBRbinu8gVAMd2UZjji6jVmqKtZluZnptXGWhz1E8j8D2HJ3f/yMxKAUC0b+57wncIw=="],
 
-    "@laravel/echo-vue": ["@laravel/echo-vue@2.1.7", "", { "peerDependencies": { "pusher-js": "*", "socket.io-client": "*", "vue": "^3.0.0" } }, "sha512-ZqtrKEJnKxXlYYd+ErFBh22LX2rRE4cuWkqa6FWUTrk/eNdulCkaX/K6y/MrJ2513Mz0irKnG9DR0tO9o8kO+Q=="],
+    "@laravel/echo-vue": ["@laravel/echo-vue@2.2.0", "", { "peerDependencies": { "pusher-js": "*", "socket.io-client": "*", "vue": "^3.0.0" } }, "sha512-fAHujv6d7nUCL2MbmAM0y6NDKz+6J+lJo+1mq5drCtOocHL6bwhWxmfG/9tunDZ7mwaSa9kjuxFDTrTQGvs1TQ=="],
 
     "@mapbox/node-pre-gyp": ["@mapbox/node-pre-gyp@2.0.0", "", { "dependencies": { "consola": "^3.2.3", "detect-libc": "^2.0.0", "https-proxy-agent": "^7.0.5", "node-fetch": "^2.6.7", "nopt": "^8.0.0", "semver": "^7.5.3", "tar": "^7.4.0" }, "bin": { "node-pre-gyp": "bin/node-pre-gyp" } }, "sha512-llMXd39jtP0HpQLVI37Bf1m2ADlEb35GYSh1SDSLsBhR+5iCxiNGlT31yqbNtVHygHAtMy6dWFERpU2JgufhPg=="],
 
@@ -1556,7 +1556,7 @@
 
     "lambda-local": ["lambda-local@2.2.0", "", { "dependencies": { "commander": "^10.0.1", "dotenv": "^16.3.1", "winston": "^3.10.0" }, "bin": { "lambda-local": "build/cli.js" } }, "sha512-bPcgpIXbHnVGfI/omZIlgucDqlf4LrsunwoKue5JdZeGybt8L6KyJz2Zu19ffuZwIwLj2NAI2ZyaqNT6/cetcg=="],
 
-    "laravel-echo": ["laravel-echo@2.1.7", "", { "peerDependencies": { "pusher-js": "*", "socket.io-client": "*" } }, "sha512-EMcRmI/hJhea+eCeyJY9e7gkdVVZ42kGyntKZuM3NxeR00Glu45Cpsr0kNz4QC09YCQd48LZjQA1xSTtYteTwg=="],
+    "laravel-echo": ["laravel-echo@2.2.0", "", { "peerDependencies": { "pusher-js": "*", "socket.io-client": "*" } }, "sha512-pmlAT34FiUMk3B1bntXZ6ownqfRXwHrWdeSW5pWJYolbcfn/ILBA8+E4ZRUmbG0iSvBmwsVOxahTjVU6T0AgEg=="],
 
     "launch-editor": ["launch-editor@2.10.0", "", { "dependencies": { "picocolors": "^1.0.0", "shell-quote": "^1.8.1" } }, "sha512-D7dBRJo/qcGX9xlvt/6wUYzQxjh5G1RvZPgPv8vi4KRU99DVQL/oW7tnVOCCTm2HGeo3C5HvGE5Yrh6UBoZ0vA=="],
 

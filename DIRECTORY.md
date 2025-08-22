@@ -1,9 +1,15 @@
 .
+|-- DIRECTORY.md
+|-- Dockerfile
+|-- README.md
+|-- _lighthouse_ide_helper.php
 |-- app
 |   |-- Console
 |   |   `-- Commands
-|   |       |-- GenerateOtpSecretKey.php
-|   |       `-- UpdateExpiredPermits.php
+|   |       |-- DeleteOldTasks.php
+|   |       `-- GenerateOtpSecretKey.php
+|   |-- Events
+|   |   `-- TaskUpdated.php
 |   |-- GraphQL
 |   |   |-- Mutations
 |   |   |   |-- Login.php
@@ -12,7 +18,7 @@
 |   |   |   |-- Upload.php
 |   |   |   `-- UserMutator.php
 |   |   `-- Resolvers
-|   |       |-- DocumentResolver.php
+|   |       |-- TaskResolver.php
 |   |       `-- UserResolver.php
 |   |-- Http
 |   |   |-- Controllers
@@ -26,9 +32,9 @@
 |   |   |-- SendOtpMail.php
 |   |   `-- UserStatusChanged.php
 |   |-- Models
-|   |   |-- Document.php
 |   |   |-- Permission.php
 |   |   |-- Role.php
+|   |   |-- Task.php
 |   |   `-- User.php
 |   |-- Providers
 |   |   |-- AppServiceProvider.php
@@ -39,9 +45,12 @@
 |-- bootstrap
 |   |-- app.php
 |   |-- cache
+|   |   |-- packages.php
+|   |   `-- services.php
 |   `-- providers.php
 |-- bun.lock
 |-- client
+|   |-- Dockerfile
 |   |-- app.vue
 |   |-- assets
 |   |   `-- css
@@ -69,13 +78,12 @@
 |   |   |-- useLinks.ts
 |   |   |-- useSearchQueryOptions.ts
 |   |   `-- useTableData.ts
-|   |-- Dockerfile
 |   |-- graphql
 |   |   |-- Auth.ts
-|   |   |-- Document.ts
 |   |   |-- Fragment.ts
 |   |   |-- Permission.ts
 |   |   |-- Role.ts
+|   |   |-- Task.ts
 |   |   `-- User.ts
 |   |-- layouts
 |   |   |-- app-layout.vue
@@ -85,19 +93,23 @@
 |   |-- middleware
 |   |   `-- auth.global.ts
 |   |-- pages
+|   |   |-- Login.vue
+|   |   |-- Register.vue
 |   |   |-- dashboard
 |   |   |   `-- index.vue
-|   |   |-- documents
+|   |   |-- index.vue
+|   |   |-- notfound.vue
+|   |   |-- tasks
 |   |   |   |-- components
-|   |   |   |   `-- manage-document.vue
+|   |   |   |   |-- kanban-board.vue
+|   |   |   |   `-- manage-task.vue
 |   |   |   |-- data
 |   |   |   |   |-- columns.ts
-|   |   |   |   `-- schema.ts
-|   |   |   `-- index.vue
-|   |   |-- index.vue
-|   |   |-- Login.vue
-|   |   |-- notfound.vue
-|   |   |-- Register.vue
+|   |   |   |   |-- schema.ts
+|   |   |   |   `-- types.ts
+|   |   |   |-- index.vue
+|   |   |   `-- utils
+|   |   |       `-- helper.ts
 |   |   |-- unauthorized.vue
 |   |   `-- users
 |   |       |-- components
@@ -116,8 +128,11 @@
 |   |       |       |-- columns.ts
 |   |       |       `-- schema.ts
 |   |       `-- index.vue
+|   |-- plugins
+|   |   `-- echo.client.js
 |   |-- stores
-|   |   `-- authStore.ts
+|   |   |-- authStore.ts
+|   |   `-- taskStore.ts
 |   |-- types
 |   |   |-- codegen
 |   |   |   |-- fragment-masking.ts
@@ -134,6 +149,7 @@
 |-- config
 |   |-- app.php
 |   |-- auth.php
+|   |-- broadcasting.php
 |   |-- cache.php
 |   |-- cors.php
 |   |-- database.php
@@ -144,11 +160,13 @@
 |   |-- octane.php
 |   |-- permission.php
 |   |-- queue.php
+|   |-- reverb.php
 |   |-- sanctum.php
 |   |-- services.php
 |   `-- session.php
 |-- database
 |   |-- factories
+|   |   |-- TaskFactory.php
 |   |   `-- UserFactory.php
 |   |-- migrations
 |   |   |-- 0001_01_01_000000_create_users_table.php
@@ -156,22 +174,19 @@
 |   |   |-- 0001_01_01_000002_create_jobs_table.php
 |   |   |-- 2025_02_28_125236_create_personal_access_tokens_table.php
 |   |   |-- 2025_03_08_130917_create_permission_tables.php
-|   |   `-- 2025_07_12_205508_create_documents_table.php
+|   |   `-- 2025_08_01_150949_create_tasks_table.php
 |   `-- seeders
 |       `-- DatabaseSeeder.php
-|-- DIRECTORY.md
 |-- docker-compose.yml
-|-- Dockerfile
 |-- eslint.config.mjs
 |-- graphql
-|   |-- auth.graphql
 |   |-- Models
-|   |   |-- Document.graphql
 |   |   |-- Permission.graphql
 |   |   |-- Role.graphql
+|   |   |-- Task.graphql
 |   |   `-- User.graphql
+|   |-- auth.graphql
 |   `-- schema.graphql
-|-- _lighthouse_ide_helper.php
 |-- nginx
 |   `-- default.conf
 |-- nuxt.config.ts
@@ -182,7 +197,6 @@
 |   |-- favicon.ico
 |   |-- index.php
 |   `-- robots.txt
-|-- README.md
 |-- resources
 |   |-- css
 |   |   `-- app.css
@@ -196,6 +210,7 @@
 |       `-- welcome.blade.php
 |-- routes
 |   |-- api.php
+|   |-- channels.php
 |   |-- console.php
 |   `-- web.php
 |-- schema-directives.graphql
@@ -204,7 +219,8 @@
 |-- tailwind.config.js
 |-- tests
 |   |-- Feature
-|   |   `-- ExampleTest.php
+|   |   |-- ExampleTest.php
+|   |   `-- TaskTest.php
 |   |-- TestCase.php
 |   `-- Unit
 |       `-- ExampleTest.php

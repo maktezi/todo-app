@@ -263,10 +263,6 @@ const { refetch: refetchTasks, result: tasksResult } = useQuery(
     () => queryVariables.value,
 );
 
-onMounted(() => {
-    console.log("TASKS:", tasksResult.value?.tasksPaginate);
-});
-
 const taskBoard = useTaskBoardStore();
 const columns = computed(() => taskBoard.columns);
 
